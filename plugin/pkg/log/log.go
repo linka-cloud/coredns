@@ -16,6 +16,15 @@ import (
 	"sync/atomic"
 )
 
+var logger = golog.New(os.Stderr, "", golog.LstdFlags)
+
+func SetLogger(l *golog.Logger) {
+	if l == nil {
+		l = golog.New(os.Stderr, "", golog.LstdFlags)
+	}
+	logger = l
+}
+
 // D controls whether we should output debug logs. If true, we do, once set
 // it can not be unset.
 var D = &d{}
@@ -41,12 +50,12 @@ func (d *d) Value() bool {
 
 // logf calls log.Printf prefixed with level.
 func logf(level, format string, v ...any) {
-	golog.Print(level, fmt.Sprintf(format, v...))
+	logger.Print(level, fmt.Sprintf(format, v...))
 }
 
 // log calls log.Print prefixed with level.
 func log(level string, v ...any) {
-	golog.Print(level, fmt.Sprint(v...))
+	logger.Print(level, fmt.Sprint(v...))
 }
 
 // Debug is equivalent to log.Print(), but prefixed with "[DEBUG] ". It only outputs something
